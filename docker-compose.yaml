@@ -1,0 +1,28 @@
+version: '3.3'
+services:
+  api:
+    image: "api:latest"
+    build:
+      context: api
+      dockerfile: "./build/Dockerfile"
+    command: "/app/api-linux-amd64"
+    env_file:
+      - api/.env
+    container_name: api
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    volumes:
+      - ./api/.artifacts:/app/
+  redis:
+    image: "redis:latest"
+    build:
+      context: redis
+      dockerfile: Dockerfile
+    volumes:
+      - ./redis/data:/data
+    container_name: redis
+    ports:
+      - '6379:6379'
+    restart: always
