@@ -11,11 +11,11 @@ import (
 var rClient *redis.Client
 
 func main() {
-	e :=  gin.Default()
+	e := gin.Default()
 	e.Use(cors.Default())
 	e.GET("/", getKey)
 
-	if err :=e.Run(":8081"); err != nil {
+	if err := e.Run(":8081"); err != nil {
 		panic(err)
 	}
 }
@@ -44,11 +44,10 @@ func redisConnection() {
 	})
 }
 
-func getCachedKey(ctx context.Context, key string) (string, error) {
-	res, err := rClient.Get(ctx, key).Result()
+func getCachedKey(ctx context.Context, key string) ([]string, error) {
+	res, err := rClient.ZRange(ctx, key, 0, -1).Result()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	return res, nil
 }
-
